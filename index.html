@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rate Us</title>
+    <style>
+       body {
+            display: flex;
+            justify-content: center; /* Horizontally center */
+            align-items: center;     /* Vertically center */
+            height: 100vh;           /* Full viewport height */
+            margin: 0;               /* Remove default margin */
+            animation: changeBackground 10s infinite; /* Animate the background */
+        }
+
+        @keyframes changeBackground {
+            0% {
+                background-color: #f0f0f0;
+            }
+            25% {
+                background-color: #e4d1d1;
+            }
+            50% {
+                background-color: #9fa9a3;
+            }
+            75% {
+                background-color: #e3e0cc;
+            }
+            100% {
+                background-color: #f0f0f0;
+            }
+        }
+
+
+        .container {
+            justify-content: center;
+            max-width: 400px;
+            width: 100%;             /* Ensure it takes full width up to max-width */
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .rating {
+            display: flex;
+            justify-content: center;
+            direction: rtl; /* Start highlighting stars from the right */
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .rating input {
+            display: none;
+        }
+        .rating label {
+            font-size: 50px;
+            color: #ccc;
+            cursor: pointer;
+        }
+        .rating input:checked ~ label,
+        .rating label:hover,
+        .rating label:hover ~ label {
+            color: rgb(255, 219, 14);
+        }
+        textarea {
+            width: 90%;
+            Height: 100px;
+            margin-top: 10px;
+            padding: 10px;
+            border: 2px solid #dddcdc;
+            border-radius: 5px;
+            resize: none;
+            display: none; /* Initially hidden */
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-top: 20px;
+            background-color: #4d941e;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:disabled {
+            background-color: #ccc;
+        }
+        .feedback-message {
+            display: none;
+            font-size: 22px; /* Increase text size */
+            font-weight: bold; /* Make text bold */
+            text-align: center;
+            margin-top: 20px;
+            color: #4d941e; /* The green color */
+            opacity: 1; /* Start with invisible text */
+            transition: opacity 1s ease, transform 1s ease; /* Add smooth transition for opacity and transform */
+        }
+
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Rate Your Experience</h1>
+        <div class="rating">
+            <input type="radio" id="star5" name="rating" value="5">
+            <label for="star5">★</label>
+            <input type="radio" id="star4" name="rating" value="4">
+            <label for="star4">★</label>
+            <input type="radio" id="star3" name="rating" value="3">
+            <label for="star3">★</label>
+            <input type="radio" id="star2" name="rating" value="2">
+            <label for="star2">★</label>
+            <input type="radio" id="star1" name="rating" value="1">
+            <label for="star1">★</label>
+        </div>
+        <textarea id="comments" placeholder="Write your feedback here..."></textarea>
+        <button id="submitBtn" disabled>Submit</button>
+        <div class="feedback-message" id="feedbackMessage"></div>
+    </div>
+
+    <script>
+        const ratingInputs = document.querySelectorAll("input[name='rating']");
+        const submitBtn = document.getElementById("submitBtn");
+        const feedbackMessage = document.getElementById("feedbackMessage");
+        const commentsBox = document.getElementById("comments");
+
+        let isSubmitted = false; // Prevent re-submission
+
+        // Enable the submit button when a rating is selected
+        ratingInputs.forEach(input => {
+            input.addEventListener("change", () => {
+                if (!isSubmitted) {
+                    submitBtn.disabled = false;
+                }
+
+                const selectedRating = document.querySelector("input[name='rating']:checked")?.value;
+
+                if (selectedRating <= 3) {
+                    // Show the comments box for low ratings
+                    commentsBox.style.display = "block";
+                } else {
+                    // Hide the comments box for high ratings
+                    commentsBox.style.display = "none";
+                }
+            });
+        });
+
+        // Handle submit button click
+        submitBtn.addEventListener("click", () => {
+            if (isSubmitted) return; // Prevent re-submission
+
+            isSubmitted = true; // Mark the form as submitted
+            const selectedRating = document.querySelector("input[name='rating']:checked")?.value;
+
+            if (selectedRating <= 3) {
+                // Display custom thank-you message for low ratings
+                feedbackMessage.textContent = "Thank you for your feedback!";
+                feedbackMessage.style.display = "block";
+
+                // Disable further interaction
+                disableInteraction();
+
+                // Automatically close the page after 2 seconds
+                setTimeout(() => {
+                    window.close();
+                }, 10000);
+            } else {
+                // Redirect to Google review page for high ratings
+                window.location.href = "https://g.page/r/CYhmgccMz5QYEBM/review";
+            }
+        });
+
+        // Function to disable further interaction after submit
+        function disableInteraction() {
+            // Disable the stars
+            ratingInputs.forEach(input => {
+                input.disabled = true;
+            });
+
+            // Disable the submit button
+            submitBtn.disabled = true;
+        }
+    </script>
+</body>
+</html>
